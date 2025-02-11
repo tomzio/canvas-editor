@@ -24,6 +24,7 @@ export interface EventBusMap {
   contentChange: IContentChange
   controlChange: IControlChange
   controlContentChange: IControlContentChange
+  controlDbclick: IControlContentChange
   pageModeChange: IPageModeChange
   zoneChange: IZoneChange
   mousemove: IMouseEventChange
