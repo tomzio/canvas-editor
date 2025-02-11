@@ -15,7 +15,8 @@ import { DeepRequired } from '../../../../interface/Common'
 import {
   IControlContext,
   IControlInstance,
-  IControlRuleOption
+  IControlRuleOption,
+  IValueSet
 } from '../../../../interface/Control'
 import { IEditorOption } from '../../../../interface/Editor'
 import { IElement } from '../../../../interface/Element'
@@ -37,6 +38,9 @@ export class SelectControl implements IControlInstance {
   private options: DeepRequired<IEditorOption>
   private VALUE_DELIMITER = ','
   private DEFAULT_MULTI_SELECT_DELIMITER = ','
+  private isSelectLock: boolean
+  private fetchPromise: Promise<void> | undefined
+  private controller: AbortController | undefined
 
   constructor(element: IElement, control: Control) {
     const draw = control.getDraw()
@@ -45,6 +49,9 @@ export class SelectControl implements IControlInstance {
     this.control = control
     this.isPopup = false
     this.selectDom = null
+    this.fetchPromise = undefined
+    this.isSelectLock = false
+    this.controller = new AbortController()
   }
 
   public setElement(element: IElement) {
@@ -421,17 +428,7 @@ export class SelectControl implements IControlInstance {
     }
   }
 
-  private _createSelectPopupDom() {
-    const control = this.element.control!
-    const valueSets = control.valueSets
-    if (!Array.isArray(valueSets) || !valueSets.length) return
-    const position = this.control.getPosition()
-    if (!position) return
-    // dom树：<div><ul><li>item</li></ul></div>
-    const selectPopupContainer = document.createElement('div')
-    selectPopupContainer.classList.add(`${EDITOR_PREFIX}-select-control-popup`)
-    selectPopupContainer.setAttribute(EDITOR_COMPONENT, EditorComponent.POPUP)
-    const ul = document.createElement('ul')
+  setOptions(ul: HTMLElement, valueSets: IValueSet[], isMultiSelect?: boolean) {
     for (let v = 0; v < valueSets.length; v++) {
       const valueSet = valueSets[v]
       const li = document.createElement('li')
@@ -440,8 +437,9 @@ export class SelectControl implements IControlInstance {
         li.classList.add('active')
       }
       li.onclick = () => {
+        this.isSelectLock = true
         const codeIndex = codes.findIndex(code => code === valueSet.code)
-        if (control.isMultiSelect) {
+        if (isMultiSelect) {
           if (~codeIndex) {
             codes.splice(codeIndex, 1)
           } else {
@@ -455,10 +453,60 @@ export class SelectControl implements IControlInstance {
           }
         }
         this.setSelect(codes.join(this.VALUE_DELIMITER))
+        this.isSelectLock = false
       }
       li.append(document.createTextNode(valueSet.value))
       ul.append(li)
     }
+  }
+
+  private _createSelectPopupDom() {
+    const control = this.element.control!
+    const valueSets = control.valueSets
+    const extension = control.extension as any
+    if (!Array.isArray(valueSets) || !valueSets.length) return
+    const position = this.control.getPosition()
+    if (!position) return
+    // dom树：<div><ul><li>item</li></ul></div>
+    const selectPopupContainer = document.createElement('div')
+    selectPopupContainer.classList.add(`${EDITOR_PREFIX}-select-control-popup`)
+    selectPopupContainer.setAttribute(EDITOR_COMPONENT, EditorComponent.POPUP)
+    const ul = document.createElement('ul')
+    console.log('valueSets', control, valueSets)
+
+    const url = extension?.url
+    if (url && !this.fetchPromise && !extension.fetchInd) {
+      const mask = document.createElement('div')
+      mask.classList.add(`${EDITOR_PREFIX}-select-control-mask`)
+      const emptyLi = document.createElement('li')
+      emptyLi.append(document.createTextNode('正在加载中...'))
+      ul.append(emptyLi)
+      selectPopupContainer.append(mask)
+      if (this.fetchPromise) {
+        this.controller?.abort()
+      }
+      this.controller = new AbortController()
+      this.fetchPromise = fetch(url, {
+        signal: this.controller.signal
+      })
+        .then(res => res.json())
+        .then(data => {
+          ul.querySelectorAll('li').forEach(li => li.remove())
+          mask.remove()
+          this.control.setControlProperties({ valueSets: data })
+          this.control.setExtensionById({ id: this.element.controlId, extension: { ...extension, fetchInd: true } })
+          console.log('fetchPromise:', data)
+          this.setOptions(ul, data, control.isMultiSelect)
+        })
+        .catch(err => {
+          emptyLi.remove()
+          mask.remove()
+          console.error('fetch error:', err)
+        })
+    }
+
+    this.setOptions(ul, valueSets, control.isMultiSelect)
+
     selectPopupContainer.append(ul)
     // 定位
     const {
@@ -489,6 +537,8 @@ export class SelectControl implements IControlInstance {
 
   public destroy() {
     if (!this.isPopup) return
+    if (this.isSelectLock) return
+    this.controller?.abort()
     this.selectDom?.remove()
     this.isPopup = false
   }

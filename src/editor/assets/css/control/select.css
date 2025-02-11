@@ -1,7 +1,7 @@
 .ce-select-control-popup {
   max-width: 160px;
   min-width: 69px;
-  max-height: 225px;
+  /* max-height: 225px; */
   position: absolute;
   z-index: 1;
   border: 1px solid #e4e7ed;
@@ -10,7 +10,16 @@
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
   box-sizing: border-box;
   margin: 5px 0;
-  overflow-y: auto;
+}
+
+.ce-select-control-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, .1);
 }
 
 .ce-select-control-popup ul {
@@ -18,6 +27,8 @@
   padding: 3px 0;
   margin: 0;
   box-sizing: border-box;
+  max-height: 225px;
+  overflow-y: auto;
 }
 
 .ce-select-control-popup ul li {

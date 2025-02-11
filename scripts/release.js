@@ -16,6 +16,14 @@ const sourcePkg = fs.readFileSync(pkgPath, 'utf-8')
 const targetPkg = JSON.parse(sourcePkg)
 Reflect.deleteProperty(targetPkg, 'dependencies')
 Reflect.deleteProperty(targetPkg.scripts, 'postinstall')
+
+Reflect.set(targetPkg, 'name', '@brickio/canvas-editor')
+Reflect.set(targetPkg, 'author', 'zhouyantao <zhouyantao@karrytech.com>')
+Reflect.set(targetPkg, 'publishConfig', {
+  registry: 'http://npm.karrytech.com',
+  access: 'public',
+})
+
 fs.writeFileSync(pkgPath, JSON.stringify(targetPkg, null, 2))
 
 // 发布包
