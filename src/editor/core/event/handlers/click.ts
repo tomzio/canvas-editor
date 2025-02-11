@@ -131,6 +131,11 @@ function dblclick(host: CanvasEvent, evt: MouseEvent) {
   ) {
     return
   }
+  const eventBus = draw.getEventBus()
+  const element = draw.getControl().getActiveControl()?.getElement()
+  if (element && element.control && element.controlId) {
+    eventBus.emit('controlDbclick', { control: element.control, controlId: element.controlId })
+  }
   // 自动扩选文字-分词处理，优先使用分词器否则降级使用光标所在位置
   const rangeManager = draw.getRange()
   const segmenterRange =

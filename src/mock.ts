@@ -124,6 +124,16 @@ elementList.splice(94, 0, {
     placeholder: '有无',
     prefix: '{',
     postfix: '}',
+    extension: {
+      url: '/api/todos/sleep/1',
+      params: {
+        id: 1,
+      },
+    },
+    multiSelectDelimiter: ',',
+    selectExclusiveOptions: {
+      inputAble: true,
+    },
     valueSets: [
       {
         value: '有',
