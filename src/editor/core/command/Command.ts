@@ -132,6 +132,8 @@ export class Command {
   public getTitleValue: CommandAdapt['getTitleValue']
   public getPositionContextByEvent: CommandAdapt['getPositionContextByEvent']
   public getElementById: CommandAdapt['getElementById']
+  public getElementIndexById: CommandAdapt['getElementIndexById']
+  public getDraw: CommandAdapt['getDraw']
 
   constructor(adapt: CommandAdapt) {
     // 全局命令
@@ -246,6 +248,7 @@ export class Command {
     this.executeInsertTitle = adapt.insertTitle.bind(adapt)
     this.executeFocus = adapt.focus.bind(adapt)
     // 获取
+    this.getDraw = adapt.getDraw.bind(adapt)
     this.getImage = adapt.getImage.bind(adapt)
     this.getOptions = adapt.getOptions.bind(adapt)
     this.getValue = adapt.getValue.bind(adapt)
@@ -269,6 +272,7 @@ export class Command {
     this.getTitleValue = adapt.getTitleValue.bind(adapt)
     this.getPositionContextByEvent = adapt.getPositionContextByEvent.bind(adapt)
     this.getElementById = adapt.getElementById.bind(adapt)
+    this.getElementIndexById = adapt.getElementIndexById.bind(adapt)
     // 控件
     this.executeSetControlValue = adapt.setControlValue.bind(adapt)
     this.executeSetControlExtension = adapt.setControlExtension.bind(adapt)
