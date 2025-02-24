@@ -54,7 +54,6 @@ import {
   IEditorOption,
   IEditorResult,
   IEditorText,
-  IFocusOption,
   ISetValueOption,
   IUpdateOption
 } from '../../interface/Editor'
@@ -1365,6 +1364,10 @@ export class CommandAdapt {
     })
   }
 
+  public getDraw(): Draw {
+    return this.draw
+  }
+
   public getImage(payload?: IGetImageOption): Promise<string[]> {
     return this.draw.getDataURL(payload)
   }
@@ -1844,6 +1847,14 @@ export class CommandAdapt {
     }
     return zipElementList(result, {
       extraPickAttrs: ['id']
+    })
+  }
+
+  public getElementIndexById(payload: IGetElementByIdOption): number {
+    const { id, conceptId } = payload
+    if (!id && !conceptId) return -1
+    return this.draw.getElementList().findIndex(el => {
+      return el.controlId && (el.controlId == id || el.control?.conceptId == conceptId)
     })
   }
 
@@ -2372,12 +2383,11 @@ export class CommandAdapt {
     this.draw.insertElementList([cloneElement])
   }
 
-  public focus(payload?: IFocusOption) {
-    const { position = LocationPosition.AFTER } = payload || {}
-    const curIndex =
-      position === LocationPosition.BEFORE
-        ? 0
-        : this.draw.getOriginalMainElementList().length - 1
+  public focus(payload?: IElementPosition) {
+    const { index } = payload || {}
+    const curIndex = index
+      ? index
+      : this.draw.getOriginalMainElementList().length - 1
     this.range.setRange(curIndex, curIndex)
     this.draw.render({
       curIndex,
