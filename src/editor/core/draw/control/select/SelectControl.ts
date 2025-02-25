@@ -497,6 +497,7 @@ export class SelectControl implements IControlInstance {
           this.control.setExtensionListById([{ id: this.element.controlId, extension: { ...extension, fetchInd: true } }])
           console.log('fetchPromise:', data)
           this.setOptions(ul, data, control.isMultiSelect)
+          this.control.emitControlContentChange()
         })
         .catch(err => {
           emptyLi.remove()
