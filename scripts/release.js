@@ -14,14 +14,18 @@ const sourcePkg = fs.readFileSync(pkgPath, 'utf-8')
 
 // 删除无用属性
 const targetPkg = JSON.parse(sourcePkg)
+const version = targetPkg.version.split('.')
+version[2] = `${new Date().getTime()}`
+
 Reflect.deleteProperty(targetPkg, 'dependencies')
 Reflect.deleteProperty(targetPkg.scripts, 'postinstall')
 
+Reflect.set(targetPkg, 'version', version.join('.'))
 Reflect.set(targetPkg, 'name', '@brickio/canvas-editor')
 Reflect.set(targetPkg, 'author', 'zhouyantao <zhouyantao@karrytech.com>')
 Reflect.set(targetPkg, 'publishConfig', {
   registry: 'http://npm.karrytech.com',
-  access: 'public',
+  access: 'public'
 })
 
 fs.writeFileSync(pkgPath, JSON.stringify(targetPkg, null, 2))
