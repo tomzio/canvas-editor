@@ -19,6 +19,7 @@ version[2] = `${new Date().getTime()}`
 
 Reflect.deleteProperty(targetPkg, 'dependencies')
 Reflect.deleteProperty(targetPkg.scripts, 'postinstall')
+Reflect.deleteProperty(targetPkg.scripts, 'lint')
 
 Reflect.set(targetPkg, 'version', version.join('.'))
 Reflect.set(targetPkg, 'name', '@brickio/canvas-editor')
