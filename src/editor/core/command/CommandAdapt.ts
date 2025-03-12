@@ -1714,7 +1714,7 @@ export class CommandAdapt {
         }
         if (
           (id && element.id === id) ||
-          (conceptId && element.conceptId === conceptId)
+          (conceptId && element.control?.conceptId === conceptId)
         ) {
           updateElementInfoList.push({
             elementList,
@@ -1774,7 +1774,7 @@ export class CommandAdapt {
         }
         if (
           (id && element.id === id) ||
-          (conceptId && element.conceptId === conceptId)
+          (conceptId && element.control?.conceptId === conceptId)
         ) {
           isExistDelete = true
           elementList.splice(i, 1)
@@ -1819,7 +1819,7 @@ export class CommandAdapt {
         }
         if (
           (id && element.id !== id) ||
-          (conceptId && element.conceptId !== conceptId)
+          (conceptId && element.control?.conceptId !== conceptId)
         ) {
           continue
         }
