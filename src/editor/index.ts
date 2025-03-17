@@ -69,6 +69,7 @@ import { mergeOption } from './utils/option'
 import { LineNumberType } from './dataset/enum/LineNumber'
 import { AreaMode } from './dataset/enum/Area'
 import { IBadge } from './interface/Badge'
+import { LaTexUtils } from './core/draw/particle/latex/utils/LaTexUtils'
 
 export default class Editor {
   public command: Command
@@ -157,7 +158,8 @@ export {
   splitText,
   createDomFromElementList,
   getElementListByHTML,
-  getTextFromElementList
+  getTextFromElementList,
+  LaTexUtils,
 }
 
 // 对外常量
