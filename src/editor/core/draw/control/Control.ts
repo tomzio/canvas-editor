@@ -390,6 +390,8 @@ export class Control {
       dateControl.awake()
     } else if (control.type === ControlType.NUMBER) {
       this.activeControl = new NumberControl(element, this)
+    } else if (control.type === ControlType.LATEX) {
+      this.activeControl = new TextControl(element, this)
     }
     // 缓存控件数据
     this.updateActiveControlValue()
@@ -815,6 +817,7 @@ export class Control {
           if (nextElement.controlId !== element.controlId) break
           if (
             (type === ControlType.TEXT ||
+              type === ControlType.LATEX ||
               type === ControlType.DATE ||
               type === ControlType.NUMBER) &&
             nextElement.controlComponent === ControlComponent.VALUE
@@ -828,6 +831,7 @@ export class Control {
         }
         if (
           type === ControlType.TEXT ||
+          type === ControlType.LATEX ||
           type === ControlType.DATE ||
           type === ControlType.NUMBER
         ) {
@@ -944,6 +948,28 @@ export class Control {
             ? [{ value }]
             : []
           if (formatValue.length) {
+            formatElementList(formatValue, {
+              isHandleFirstElement: false,
+              editorOptions: this.options
+            })
+          }
+          const text = new TextControl(element, this)
+          this.activeControl = text
+          if (formatValue.length) {
+            text.setValue(formatValue, controlContext, controlRule)
+          } else {
+            text.clearValue(controlContext, controlRule)
+          }
+        } else if (type === ControlType.LATEX) {
+          const formatValue = Array.isArray(value)
+            ? value
+            : value
+            ? [{ value }]
+            : []
+          if (formatValue.length) {
+            formatValue.forEach(item => {
+              item.type = ElementType.LATEX
+            })
             formatElementList(formatValue, {
               isHandleFirstElement: false,
               editorOptions: this.options
