@@ -2,6 +2,7 @@ import {
   IContentChange,
   IControlChange,
   IControlContentChange,
+  IImageSizeChange,
   IIntersectionPageNoChange,
   IMouseEventChange,
   IPageModeChange,
@@ -34,4 +35,5 @@ export interface EventBusMap {
   mouseup: IMouseEventChange
   click: IMouseEventChange
   positionContextChange: IPositionContextChange
+  imageSizeChange: IImageSizeChange
 }
