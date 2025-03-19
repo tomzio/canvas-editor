@@ -125,7 +125,7 @@ elementList.splice(94, 0, {
     prefix: '{',
     postfix: '}',
     extension: {
-      url: '/api/todos/sleep/1',
+      url: 'https://mock.presstime.cn/mock/67d00e34f37f6d98bb4fea53/api/options',
       params: {
         id: 1,
       },
@@ -385,6 +385,34 @@ elementList.push(
     }
   ])
 )
+
+// LaTex公式
+elementList.push(
+  ...(<IElement[]>[
+    {
+      value: '患者孕周：'
+    },
+    {
+      type: ElementType.CONTROL,
+      value: `2^{12}`,
+      control: {
+        conceptId: '15',
+        type: ControlType.LATEX,
+        value: [
+          {
+            value: `3^{15}`,
+            type: ElementType.LATEX,
+          }
+        ],
+        placeholder: '医学公式'
+      }
+    },
+    {
+      value: '\n'
+    }
+  ])
+)
+
 
 // LaTex公式
 elementList.push(
