@@ -494,7 +494,7 @@ export class SelectControl implements IControlInstance {
           ul.querySelectorAll('li').forEach(li => li.remove())
           mask.remove()
           this.control.setControlProperties({ valueSets: data })
-          this.control.setExtensionById({ id: this.element.controlId, extension: { ...extension, fetchInd: true } })
+          this.control.setExtensionListById([{ id: this.element.controlId, extension: { ...extension, fetchInd: true } }])
           console.log('fetchPromise:', data)
           this.setOptions(ul, data, control.isMultiSelect)
         })
