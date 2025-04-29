@@ -959,6 +959,7 @@ export function getAnchorElement(
 
 export interface IFormatElementContextOption {
   isBreakWhenWrap?: boolean
+  isPaste?: boolean
   editorOptions?: DeepRequired<IEditorOption>
 }
 
@@ -970,7 +971,7 @@ export function formatElementContext(
 ) {
   let copyElement = getAnchorElement(sourceElementList, anchorIndex)
   if (!copyElement) return
-  const { isBreakWhenWrap = false, editorOptions } = options || {}
+  const { isBreakWhenWrap = false, isPaste = false, editorOptions } = options || {}
   const { mode } = editorOptions || {}
   // 非设计模式时：标题元素禁用时不复制标题属性
   if (mode !== EditorMode.DESIGN && copyElement.title?.disabled) {
@@ -980,6 +981,9 @@ export function formatElementContext(
   let isBreakWarped = false
   for (let e = 0; e < formatElementList.length; e++) {
     const targetElement = formatElementList[e]
+    if (isPaste && targetElement.control) {
+      targetElement.controlId = getUUID()
+    }
     if (
       isBreakWhenWrap &&
       !copyElement.listId &&

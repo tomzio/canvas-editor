@@ -58,6 +58,7 @@ export function pasteElement(host: CanvasEvent, elementList: IElement[]) {
     }
     formatElementContext(originalElementList, elementList, startIndex, {
       isBreakWhenWrap: true,
+      isPaste: true,
       editorOptions: draw.getOptions()
     })
   }
